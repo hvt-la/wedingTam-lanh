@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Văn Tâm & Lan Anh Wedding site!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Văn Tâm & Lan Anh - Our wedding date: 2026-05-02">
+    <meta property="og:site_name" content="Văn Tâm & Lan Anh">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Văn Tâm & Lan Anh Wedding site!">
+    <meta property="og:url" content="https://longhienweddinghpbg.iwedding.info">
+    <link rel="shortcut icon" type="image/x-icon" href="https://iwedding.info/favicon.ico">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Texturina:opsz,wght@12..72,100&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bellota+Text&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arima:wght@100&display=swap" rel="stylesheet">
+    
+    <link href="https://longhienweddinghpbg.iwedding.info/templates/template101/css/libs.css?v=20251121" rel="stylesheet">
+    <link href="https://longhienweddinghpbg.iwedding.info/common/calendar.css?v=20251121" rel="stylesheet">
+    <link rel="stylesheet" href="https://longhienweddinghpbg.iwedding.info/templates/template101/css/style.css?v=20251121">
+    
+    <style>
+        .falling-heart {
+            position: fixed; top: -10vh; font-size: 20px; z-index: 9999;
+            animation: fall linear forwards; color: rgba(255, 107, 129, 0.7);
+            user-select: none; pointer-events: none;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+        .bii-player {
+            position: fixed; bottom: 30px; left: 20px; z-index: 99999; cursor: pointer;
+            background: #df4758; border-radius: 50%; width: 45px; height: 45px;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 0 0 0 rgba(223, 71, 88, 0.7); animation: pulse 1.5s infinite;
+        }
+        .bii-player svg { fill: white; width: 20px; height: 20px; }
+        @keyframes pulse {
+            70% { box-shadow: 0 0 0 15px rgba(223, 71, 88, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(223, 71, 88, 0); }
+        }
+        
+        /* Giao diện Đồng hồ đếm ngược */
+        #custom-clock {
+            display: flex; justify-content: center; gap: 15px; text-align: center; margin-top: 30px;
+        }
+        #custom-clock .box {
+            background: #df4758; padding: 15px; border-radius: 12px; color: #fff; min-width: 75px;
+            box-shadow: 0 4px 15px rgba(223, 71, 88, 0.4);
+        }
+        #custom-clock .box div { font-size: 2.2rem; font-weight: bold; line-height: 1; margin-bottom: 5px; font-family: 'Texturina', serif;}
+        #custom-clock .box span { font-size: 0.9rem; text-transform: uppercase; font-family: 'Bellota Text', sans-serif;}
+    </style>
+</head>
+
+<body data-aos-easing="ease" data-aos-duration="400" data-aos-delay="0">
+    <div class="wrapper shadow">
+        <header id="header" class="site-header header-style-1 f-nav">
+            <nav class="navbar bg-white shadow-sm py-1">
+                <div class="container-fluid">
+                    <div class="w-100 d-flex align-items-center justify-content-between">
+                        <a class="section-title navbar-brand" href="#">T & L</a>
+                        <button class="navbar-toggler rounded-0 border-0 p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                            <i class="bi bi-list fs-3 text-black"></i>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <section class="banner-section">
+            <div class="main_area p-3 py-5">
+                <div class="day_wrapper" data-aos="fade-up" data-aos-delay="500">
+                    <div class="day_area text-center d-flex">
+                        <div class="section-sub-title day_area_inner text-center m-1 w-100 d-flex flex-column justify-content-center">
+                            <span class="day">02 / 05</span>
+                            <span class="yoil">Thứ 7</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="main_image_area pt-4" data-aos="fade-up" data-aos-delay="50">
+                    <div class="main_image">
+                        <img src="images/anh-bia.jpg" alt="Ảnh Bìa">
+                    </div>
+                </div>
+                <div class="section-title wedding_area pt-5 mt-1" data-aos="fade-up" data-aos-delay="800">
+                    <span class="groom_name fcim">Văn Tâm</span>
+                    <img src="images/icon-tim.png" style="width: 50px">
+                    <span class="bride_name fcim">Lan Anh</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-4 accessibilities-section">
+            <div class="container-fluid">
+                <div class="row gx-2 justify-content-center">
+                    <div class="col-sm-4">
+                        <a href="#rsvp" class="w-100 mb-1 px-2 accessibility-btn btn btn-secondary" data-aos="fade-right">
+                            <span class="content-button">
+                                <img class="access-section-icon" src="https://cdn.biihappy.com/ziiweb/images/static/common/rsvp4.png" alt="access-btn"> Xác nhận tham dự
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-sm-4">
+                        <a href="#gallery" class="w-100 mb-1 px-2 accessibility-btn btn btn-secondary" data-aos="fade-up">
+                            <span class="content-button">
+                                <i class="bi bi-images fs-5 me-2"></i> Album Ảnh
+                            </span>
+                        </a>
+                    </div>
+                    <div class="col-sm-4">
+                        <a href="#donate" class="w-100 mb-1 accessibility-btn btn btn-secondary buttonDonate" data-aos="fade-left">
+                            <span class="content-button">
+                                <img class="access-section-icon" src="https://cdn.biihappy.com/ziiweb/images/static/common/money_bag.png" alt="access-btn"> Mừng cưới
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="py-5 gallery-section section-bg-affect" id="gallery">
+            <div class="container-fluid">
+                <h2 class="section-title text-center" data-aos="zoom-in-up">Album Hình Cưới</h2>
+                <h3 class="section-sub-title mb-4 text-center" data-aos="zoom-in-up">
+                    Được ai đó yêu sâu sắc sẽ mang lại cho bạn sức mạnh, trong khi yêu ai đó sâu sắc sẽ cho bạn dũng khí.
+                </h3>
+                <div class="row gx-2" id="photoGalleryContainer">
+                    <div class="col-6 gallery-item section-sub-title mb-2" data-aos="fade-right"> 
+                        <img src="images/album-1.jpg" alt="Album 1">
+                    </div>
+                    <div class="col-6 gallery-item section-sub-title mb-2" data-aos="fade-left"> 
+                        <img src="images/album-2.jpg" alt="Album 2">
+                    </div>
+                    <div class="col-6 gallery-item section-sub-title mb-2" data-aos="fade-right"> 
+                        <img src="images/album-3.jpg" alt="Album 3">
+                    </div>
+                    <div class="col-6 gallery-item section-sub-title mb-2" data-aos="fade-left"> 
+                        <img src="images/album-4.jpg" alt="Album 4">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="py-5 weddingdate-section section-bg-affect" id="weddingdate">
+            <div class="container-fluid">
+                <div class="w-100">
+                    <div class="m-auto pt-5 pb-3" data-aos="fade-up">
+                        <div class="mini_calendar">
+                            <table>
+                                <caption class="calendar-month">Tháng 5 / 2026</caption>
+                                <tbody>
+                                    <tr><th abbr="Monday">Thứ 2</th><th abbr="Tuesday">Thứ 3</th><th abbr="Wednesday">Thứ 4</th><th abbr="Thursday">Thứ 5</th><th abbr="Friday">Thứ 6</th><th abbr="Saturday">Thứ 7</th><th abbr="Sunday">CN</th></tr>
+                                    <tr><td></td><td></td><td></td><td></td><td>1</td><td><div id="today">2</div></td><td>3</td></tr>
+                                    <tr><td>4</td><td>5</td><td>6</td><td>7</td><td>8</td><td>9</td><td>10</td></tr>
+                                    <tr><td>11</td><td>12</td><td>13</td><td>14</td><td>15</td><td>16</td><td>17</td></tr>
+                                    <tr><td>18</td><td>19</td><td>20</td><td>21</td><td>22</td><td>23</td><td>24</td></tr>
+                                    <tr><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td><td>31</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="countdown" data-aos="fade-up">
+                        <div id="custom-clock">
+                            <div class='box'><div id="cd-days">00</div> <span>Ngày</span></div>
+                            <div class='box'><div id="cd-hours">00</div> <span>Giờ</span></div>
+                            <div class='box'><div id="cd-minutes">00</div> <span>Phút</span></div>
+                            <div class='box'><div id="cd-seconds">00</div> <span>Giây</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-5 invitation-section section-bg-affect" id="invitation">
+            <div class="container-fluid">
+                <div class="w-100">
+                    <div data-aos="fade-up" class="invation-title">
+                        <span class="p-5 fw-bold text-center">02 / 05</span>
+                        <h3 class="text-center text-white">Lời Ngỏ</h3>
+                    </div>
+                    <div>
+                        <div data-aos="fade-up" class="invitation-content my-5 text-center" style="line-height: 1.8;">
+                            Cảm ơn tất cả những người thân, người bạn tuyệt vời của chúng tôi!<br>
+                            Tôi biết các bạn rất bận rộn với công việc và gia đình…<br>
+                            Nhưng sự có mặt của bạn trong ngày hôm nay chính là lời chúc phúc ý nghĩa nhất dành cho tình yêu của hai đứa.<br>
+                            Một lần nữa chân thành cảm ơn tất cả các bạn!
+                        </div>
+                        <div data-aos="fade-up" class="section-title invitation-couple mb-5 d-flex align-items-center justify-content-center my-4 fs-4">
+                            <span class="text-center">Văn Tâm</span>
+                            <i class="bi bi-heart-fill mx-2 fs-6 px-2"></i>
+                            <span class="text-center">Lan Anh</span>
+                        </div>
+                        <div data-aos="fade-up" class="couple-img mb-5">
+                            <img src="images/anh-loi-ngo.jpg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-5 bg-white rsvp-section section-bg-affect" id="rsvp">
+            <div class="container-fluid">
+                <h2 data-aos="fade-up" class="section-title text-center m-0">Xác Nhận Tham Dự</h2>
+                <h3 data-aos="fade-up" class="section-sub-title mb-4 text-center">
+                    Sự hiện diện của bạn là niềm vinh hạnh cho gia đình chúng tôi!
+                </h3>
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6" data-aos="fade-up">
+                        <form id="rsvp-form" class="p-4 rounded shadow" style="background: #fff0f1;" action="https://formspree.io/f/THAY_ID_FORMSPREE_CUA_BAN" method="POST">
+                            <div class="mb-3">
+                                <input type="text" class="form-control border-0 p-3" id="name" name="Tên_Khách" required placeholder="Nhập tên của bạn*">
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-select border-0 p-3" id="guest" name="Đi_Cùng_Ai">
+                                    <option value="" disabled selected>Bạn đi cùng ai?</option>
+                                    <option value="Đi một mình">Đi một mình</option>
+                                    <option value="Đi cùng người yêu">Đi cùng người yêu</option>
+                                    <option value="Đi cùng gia đình">Đi cùng gia đình</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-select border-0 p-3" id="event_attend" name="Sự_Kiện_Tham_Dự" required>
+                                    <option value="" disabled selected>Sự kiện tham dự*</option>
+                                    <option value="Lễ Thành Hôn (Nhà Trai)">Lễ Thành Hôn (Nhà Trai) - 11:00 02/05/2026</option>
+                                    <option value="Tiệc Cưới (Nhà Gái)">Tiệc Cưới (Nhà Gái) - 09:00 01/05/2026</option>
+                                    <option value="Cả hai">Tham dự cả hai</option>
+                                </select>
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn text-white w-100 py-3 fw-bold border-0" style="background-color: #df4758; border-radius: 50px; font-size: 1.1rem;">GỬI XÁC NHẬN</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-5 event-section section-bg-affect" id="event">
+            <div class="container-fluid">
+                <h2 data-aos="fade-up" class="section-title text-center">Sự Kiện Cưới</h2>
+                <h3 data-aos="fade-up" class="section-sub-title mb-4 text-center">
+                    Cảm ơn bạn rất nhiều vì đã đến chung vui cùng gia đình chúng tôi!
+                </h3>
+                
+                <div data-aos="flip-right" class="event-item d-flex flex-row p-0 border-0 rounded overflow-hidden">
+                    <div class="image-wrap" style="background-image: url('images/anh-nha-trai.jpg');"></div>
+                    <div class="info-wrap p-3">
+                        <h5 class="section-sub-title">LỄ THÀNH HÔN (NHÀ TRAI)</h5>
+                        <strong>11:00 02/05/2026</strong>
+                        <p class="card-text">
+                            <span>Nhà hàng Thiên Ân Palace</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div data-aos="flip-left" class="event-item d-flex flex-row p-0 border-0 rounded overflow-hidden mt-4">
+                    <div class="image-wrap" style="background-image: url('images/anh-nha-gai.jpg');"></div>
+                    <div class="info-wrap p-3">
+                        <h5 class="section-sub-title">TIỆC CƯỚI NHÀ GÁI</h5>
+                        <strong>09:00 01/05/2026</strong>
+                        <p class="card-text">
+                            <span>Nhà cô Dâu</span><br>
+                            [Nhập địa chỉ nhà gái vào đây]
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="py-5 couple-section section-bg-affect" id="couple">
+            <div class="container-fluid">
+                <h2 data-aos="fade-up" class="section-title text-center m-0">Cô Dâu & Chú Rể</h2>
+                <h3 data-aos="fade-up" class="section-sub-title mb-0 text-center">
+                    Tình yêu không phải là nhìn chằm chằm vào nhau, mà là cùng nhau nhìn về một hướng.
+                </h3>
+                <div class="section-title wrap-people d-flex mt-5">
+                    <div class="member member-groom mb-4 w-50">
+                        <div data-aos="flip-left" class="member-image animation">
+                            <img src="images/anh-chu-re.jpg">
+                        </div>
+                        <div data-aos="fade-left" class="member-name py-2 fw-bold">Văn Tâm</div>
+                        <div class="parent my-2 d-flex flex-column text-center mx-auto"> 
+                            <div>Bố: <span class="parent-name">[Tên bố chú rể]</span></div>
+                            <div>Mẹ: <span class="parent-name">[Tên mẹ chú rể]</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="member member-bride w-50">
+                        <div data-aos="flip-right" class="member-image animation">
+                            <img src="images/anh-co-dau.jpg">
+                        </div>
+                        <div data-aos="fade-right" class="member-name py-2 fw-bold">Lan Anh</div>
+                        <div class="parent my-2 d-flex flex-column text-center mx-auto"> 
+                            <div>Bố: <span class="parent-name">[Tên bố cô dâu]</span></div>
+                            <div>Mẹ: <span class="parent-name">[Tên mẹ cô dâu]</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-5 bg-white donate-section section-bg-affect" id="donate">
+            <div class="container-fluid ">
+                <div class="w-100">
+                    <h2 data-aos="fade-up" class="section-title text-center m-0">Hộp mừng cưới </h2>
+                    <h3 data-aos="fade-up" class="section-sub-title mb-4 text-center">
+                        Thật vui vì được gặp và đón tiếp các bạn trong một dịp đặc biệt như đám cưới của chúng tôi. 
+                    </h3>
+                    <div class="row d-flex justify-content-around donate-box mb-1">
+                        <div data-aos="fade-right" class="col-6 mb-4 donate-wrap">
+                            <div class="donate-card p-3 rounded text-center">
+                                <strong class="d-block sub-title mb-2 text-uppercase">Đến chú rể</strong>
+                                <img class="qr-code-image m-auto mb-2" src="images/qr-chu-re.jpg" style="width: 100%; max-width: 200px;">
+                                <p class="mb-1">Ngân hàng: <strong>[Nhập tên NH]</strong></p>
+                                <p class="mb-1">Tên tài khoản: <strong>Văn Tâm</strong></p>
+                                <p class="mb-1">Số TK: <strong>[Nhập số TK]</strong></p>
+                            </div>
+                        </div>
+                        <div data-aos="fade-left" class="col-6 donate-wrap">
+                            <div class="donate-card p-3 rounded text-center">
+                                <strong class="d-block sub-title mb-2 text-uppercase">Đến cô dâu</strong>
+                                <img class="qr-code-image m-auto mb-2" src="images/qr-co-dau.jpg" style="width: 100%; max-width: 200px;">
+                                <p class="mb-1">Ngân hàng: <strong>[Nhập tên NH]</strong></p>
+                                <p class="mb-1">Tên tài khoản: <strong>Lan Anh</strong></p>
+                                <p class="mb-1">Số TK: <strong>[Nhập số TK]</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="py-5 wishes-section section-bg-affect" id="wishes">
+            <div class="container-fluid">
+                <h2 data-aos="fade-up" class="section-title text-center">Sổ Lưu Bút</h2>
+                <h3 data-aos="fade-up" class="section-sub-title mb-4 text-center">
+                    Cảm ơn bạn rất nhiều vì đã gửi những lời chúc mừng tốt đẹp nhất!
+                </h3>
+                <div id="section-comment" class="pb-3">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 col-lg-6" data-aos="fade-up">
+                            <form action="https://formspree.io/f/THAY_ID_FORMSPREE_CUA_BAN" method="POST" id="wish-form" class="py-4 contact-validation-active">
+                                <div class="mb-3 d-flex">
+                                    <div class="w-50 me-2">
+                                        <input name="Tên" id="name-comment" type="text" class="form-control border-0 p-3 shadow-sm" placeholder="Nhập tên của bạn*" required>
+                                    </div>
+                                    <div class="w-50 ms-2">
+                                        <input name="Email" id="email-comment" type="email" class="form-control border-0 p-3 shadow-sm" placeholder="E-mail">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <textarea id="content" name="Lời_Chúc" class="form-control border-0 p-3 shadow-sm" rows="4" placeholder="Nhập lời chúc của bạn*" required></textarea>
+                                </div>
+                                <div class="text-center">
+                                    <button type="submit" class="p-3 w-50 btn btn-success border-0 fw-bold shadow" style="border-radius: 50px;">Gửi lời chúc</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-title footer-section py-5 text-center section-bg-affect">
+            <div class="container-fluid">
+                <h3 class="title">Thank you!</h3>
+                <h5 class="sub-title">-- Văn Tâm & Lan Anh --</h5>
+            </div>
+        </section>
+    </div>
+
+    <div class="bii-player" id="playPauseBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <path d="M6 13c0 1.105-1.12 2-2.5 2S1 14.105 1 13c0-1.104 1.12-2 2.5-2s2.5.896 2.5 2zm9-2c0 1.105-1.12 2-2.5 2s-2.5-.895-2.5-2 1.12-2 2.5-2 2.5.895 2.5 2z"/>
+            <path fill-rule="evenodd" d="M14 11V2h1v9h-1zM6 3v10H5V3h1z"/>
+            <path d="M5 2.905a1 1 0 0 1 .9-.995l8-.8a1 1 0 0 1 1.1.995V3L5 4V2.905z"/>
+        </svg>
+    </div>
+    
+    <audio id="bgMusic" src="music/nhac-le-duong.mp3" loop></audio>
+
+    <script src="https://longhienweddinghpbg.iwedding.info/templates/template101/js/libs.js?v=20251121"></script>
+    <script src="https://longhienweddinghpbg.iwedding.info/templates/template101/js/script.js?v=20251121"></script>
+    <script src="https://longhienweddinghpbg.iwedding.info/common/calendar.js?v=20251121"></script>
+
+    <script>
+        // 1. Đồng hồ đếm ngược (đến ngày 02/05/2026)
+        const countDownDate = new Date("2026-05-02T11:00:00").getTime();
+        const x = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = countDownDate - now;
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("custom-clock").innerHTML = "Đã diễn ra";
+                return;
+            }
+            document.getElementById("cd-days").innerText = Math.floor(distance / (1000 * 60 * 60 * 24)).toString().padStart(2, '0');
+            document.getElementById("cd-hours").innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)).toString().padStart(2, '0');
+            document.getElementById("cd-minutes").innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+            document.getElementById("cd-seconds").innerText = Math.floor((distance % (1000 * 60)) / 1000).toString().padStart(2, '0');
+        }, 1000);
+
+        // 2. Nhạc nền
+        const audio = document.getElementById('bgMusic');
+        const btn = document.getElementById('playPauseBtn');
+        let isPlaying = false;
+        btn.addEventListener('click', () => {
+            if(isPlaying) { audio.pause(); } else { audio.play(); }
+            isPlaying = !isPlaying;
+        });
+        window.addEventListener('click', () => { 
+            if(!isPlaying) { audio.play().then(() => { isPlaying = true; }).catch(e=>{}); } 
+        }, {once: true});
+
+        // 3. Trái tim rơi
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤';
+            heart.classList.add('falling-heart');
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+            heart.style.fontSize = Math.random() * 15 + 10 + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 6000);
+        }
+        setInterval(createHeart, 400);
+    </script>
+</body>
+</html>
