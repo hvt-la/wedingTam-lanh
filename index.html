@@ -548,14 +548,51 @@
             if(s) s.innerText = seconds.toString().padStart(2, '0');
         }, 1000);
 
-        // 4. RSVP FORM
+        // 4. RSVP FORM - KẾT NỐI GOOGLE SHEETS
+        const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxnGmh4RpKNh-shneARpIzu4D7eASCgpvq0xzsP-H0G9jTvoQHUHgEdpNejMZaqARJB/exec";
+
         const rsvpForm = document.getElementById('rsvp-form');
         if(rsvpForm) {
-            rsvpForm.addEventListener('submit', function(e) {
+            rsvpForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
+                
                 const name = document.getElementById('name').value;
-                alert(`Cảm ơn Quý khách ${name} đã gửi xác nhận! Chúng con/mình rất mong gặp Quý khách.`);
-                this.reset();
+                const wish = document.getElementById('final-wish').value;
+                const attendanceRaw = document.querySelector('input[name="attendance"]:checked').value;
+                const attendance = attendanceRaw === 'yes' ? 'Tham dự' : 'Tiếc là không thể tham dự';
+                const timestamp = new Date().toLocaleString('vi-VN');
+
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerText;
+                submitBtn.innerText = 'ĐANG GỬI...';
+                submitBtn.disabled = true;
+
+                const data = {
+                    name: name,
+                    attendance: attendance,
+                    wish: wish,
+                    time: timestamp
+                };
+
+                try {
+                    await fetch(GOOGLE_SHEET_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', 
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    alert(`Cảm ơn Quý khách ${name} đã gửi xác nhận! Chúng con/mình rất mong gặp Quý khách.`);
+                    this.reset();
+                } catch (error) {
+                    console.error('Lỗi khi gửi xác nhận:', error);
+                    alert('Có lỗi xảy ra, xin vui lòng thử lại sau!');
+                } finally {
+                    submitBtn.innerText = originalText;
+                    submitBtn.disabled = false;
+                }
             });
         }
 
