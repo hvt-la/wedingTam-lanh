@@ -30,7 +30,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Pinyon+Script&family=Dancing+Script:wght@400;600;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&family=Charm:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Đã thêm font Cormorant vào danh sách tải -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Great+Vibes&family=Pinyon+Script&family=Dancing+Script:wght@400;600;700&family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&family=Charm:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         /* KHAI BÁO FONT TÙY CHỈNH AQUARELLE CHO TÊN */
@@ -57,8 +58,8 @@
 
         body { font-family: 'Montserrat', sans-serif; background-color: #f0f2f5; color: #333333; overflow-x: hidden; }
         
-        /* CẬP NHẬT: Phông chữ cho Save the Date - Sử dụng Katty Diona riêng */
-        .font-savethedate { font-family: 'Katty Diona', 'Pinyon Script', cursive; padding-bottom: 5px; }
+        /* CẬP NHẬT: Phông chữ cho Save the Date - Đổi sang Cormorant và chỉnh Light 300 */
+        .font-savethedate { font-family: 'Cormorant', serif; font-weight: 300; padding-bottom: 5px; }
         
         /* CẬP NHẬT: Phông chữ chính cho tên sử dụng Aquarelle */
         .font-name { font-family: 'Aquarelle', 'Great Vibes', cursive; padding-bottom: 5px; }
@@ -115,12 +116,8 @@
 
         .name-cover {
             color: white;
-            text-shadow: 
-                -1px -1px 0 #222,  
-                1px -1px 0 #222,
-                -1px 1px 0 #222,
-                1px 1px 0 #222,
-                0px 5px 15px rgba(0,0,0,0.5);
+            /* CẬP NHẬT: Tắt viền đen (stroke), chỉ giữ bóng đổ nhẹ để dễ đọc trên nền ảnh */
+            text-shadow: 0px 4px 10px rgba(0,0,0,0.4);
         }
 
         .name-photo {
@@ -132,9 +129,10 @@
         .music-paused { animation-play-state: paused; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 14px; margin-top: 25px; }
+        /* CẬP NHẬT: Tối ưu Grid lịch cho Mobile */
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 14px; margin-top: 25px; }
         .calendar-grid div { padding: 8px 0; }
-        .calendar-header { font-weight: 600; font-size: 10px; color: #888; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px !important; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+        .calendar-header { font-weight: 600; font-size: 9px; color: #888; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px !important; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; }
 
         @keyframes shine { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
         .btn-ai {
@@ -169,7 +167,8 @@
             </div>
             
             <div class="relative z-10 w-full pt-20 px-8 text-left reveal reveal-down active">
-                <p class="font-savethedate text-[4.2rem] text-white leading-none tracking-wider" style="text-shadow: 2px 4px 12px rgba(0,0,0,0.7), 0px 1px 3px rgba(0,0,0,0.5);">Save the Date</p>
+                <!-- GIẢM KÍCH CỠ: Từ 4.2rem xuống 2.5rem và đảm bảo nằm trên 1 hàng -->
+                <p class="font-savethedate text-[2.5rem] italic font-light text-white leading-none tracking-[0.1em] uppercase whitespace-nowrap" style="text-shadow: 2px 4px 12px rgba(0,0,0,0.7), 0px 1px 3px rgba(0,0,0,0.5);">SAVE THE DATE</p>
                 <div class="w-12 h-[2px] bg-white/80 mt-3 ml-2 rounded-full shadow-sm"></div>
             </div>
 
@@ -185,17 +184,19 @@
 
         <section class="py-12 px-8 bg-white relative z-10 text-center border-b border-gray-50">
             <div class="flex items-end justify-between reveal reveal-left mb-4">
-                <h2 class="font-savethedate text-[3.2rem] text-gray-800 leading-none">Our wedding day</h2>
-                <h3 class="font-serif text-2xl font-bold text-gray-800">Tháng Năm</h3>
+                <!-- GIẢM KÍCH CỠ: Our wedding day giảm xuống text-3xl, Tháng Năm giảm xuống text-lg -->
+                <h2 class="font-savethedate text-3xl italic font-light text-gray-800 leading-none">Our wedding day</h2>
+                <h3 class="font-serif text-lg font-bold text-gray-800">Tháng Năm</h3>
             </div>
             
             <div class="calendar-grid text-gray-800 reveal reveal-up" style="transition-delay: 0.2s;">
-                <div class="calendar-header">Thứ Hai</div>
-                <div class="calendar-header">Thứ Ba</div>
-                <div class="calendar-header">Thứ Tư</div>
-                <div class="calendar-header">Thứ Năm</div>
-                <div class="calendar-header">Thứ Sáu</div>
-                <div class="calendar-header">Thứ Bảy</div>
+                <!-- CẬP NHẬT: Tối ưu tiêu đề các thứ để không bị xuống hàng -->
+                <div class="calendar-header">Thứ 2</div>
+                <div class="calendar-header">Thứ 3</div>
+                <div class="calendar-header">Thứ 4</div>
+                <div class="calendar-header">Thứ 5</div>
+                <div class="calendar-header">Thứ 6</div>
+                <div class="calendar-header">Thứ 7</div>
                 <div class="calendar-header">Chủ Nhật</div>
 
                 <div></div><div></div><div></div><div></div>
@@ -217,7 +218,7 @@
                     <img src="images/co-dau.jpg" alt="[co-dau.jpg]" class="w-full aspect-[4/5] object-cover parallax-img">
                 </div>
                 <div class="absolute bottom-6 left-8 text-left name-photo">
-                    <p class="font-savethedate text-3xl mb-[-4px]">Cô dâu</p>
+                    <p class="font-savethedate italic font-light text-3xl mb-[-4px]">Cô dâu</p>
                     <h3 class="font-name text-[2.5rem] tracking-wider">Lan Anh</h3>
                 </div>
             </div>
@@ -227,7 +228,7 @@
                     <img src="images/chu-re.jpg" alt="[chu-re.jpg]" class="w-full aspect-[4/5] object-cover parallax-img">
                 </div>
                 <div class="absolute bottom-6 left-8 text-left name-photo">
-                    <p class="font-savethedate text-3xl mb-[-4px]">Chú rể</p>
+                    <p class="font-savethedate italic font-light text-3xl mb-[-4px]">Chú rể</p>
                     <h3 class="font-name text-[2.5rem] tracking-wider">Văn Tâm</h3>
                 </div>
             </div>
@@ -301,7 +302,7 @@
         </section>
 
         <section class="py-20 px-8 bg-white text-center">
-            <h2 class="font-savethedate text-5xl text-gray-800 mb-14 reveal reveal-down">Timeline</h2>
+            <h2 class="font-savethedate text-5xl italic font-light text-gray-800 mb-14 reveal reveal-down">Timeline</h2>
             <div class="flex flex-col items-center space-y-12">
                 <div class="flex items-center w-full max-w-[260px] reveal reveal-left group">
                     <div class="text-4xl transition-transform group-hover:scale-125">🤝</div>
@@ -387,29 +388,30 @@
             </div>
         </section>
 
-        <section class="py-20 px-8 bg-white text-center">
-            <h2 class="font-savethedate text-[4rem] text-gray-800 mb-10 reveal reveal-down">Hộp Mừng Cưới</h2>
-            <div class="grid grid-cols-2 gap-6">
+        <!-- Hộp Mừng Cưới -->
+        <section class="py-14 px-6 bg-white text-center border-t border-gray-50">
+            <h2 class="text-5xl italic font-light text-gray-800 mb-10 reveal reveal-down" style="font-family: 'Cormorant', serif; padding-bottom: 5px;">Hộp Mừng Cưới</h2>
+            <div class="grid grid-cols-2 gap-4 max-w-[360px] mx-auto">
                 <div class="reveal reveal-left">
-                    <p class="font-savethedate text-2xl mb-3 text-gray-700">Gửi chú rể</p>
-                    <div class="relative group">
-                        <img src="images/qr-chu-re.jpg" alt="[qr-chu-re.jpg]" class="w-full aspect-square object-contain border border-gray-100 rounded-[1.5rem] mb-4 p-3 shadow-md bg-white">
+                    <p class="text-3xl text-gray-800 mb-2" style="font-family: 'Dancing Script', cursive;">Gửi chú rể</p>
+                    <div class="relative group mx-auto w-36">
+                        <img src="images/qr-chu-re.jpg" alt="[Mã QR Chú Rể]" class="w-full aspect-square object-contain border border-gray-100 rounded-2xl mb-3 p-2 shadow-sm bg-white hover:scale-105 transition-transform duration-300">
                     </div>
-                    <div class="space-y-1">
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Vietinbank</p>
-                        <p class="text-sm font-bold text-gray-800 uppercase">Văn Tâm</p>
-                        <p class="text-xs text-wedding-gold font-mono">036 157 1555</p>
+                    <div class="space-y-0.5">
+                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Vietinbank</p>
+                        <p class="text-[13px] font-bold text-gray-800 uppercase">Văn Tâm</p>
+                        <p class="text-[11px] text-wedding-gold font-mono">036 157 1555</p>
                     </div>
                 </div>
                 <div class="reveal reveal-right">
-                    <p class="font-savethedate text-2xl mb-3 text-gray-700">Gửi cô dâu</p>
-                    <div class="relative group">
-                        <img src="images/qr-co-dau.jpg" alt="[qr-co-dau.jpg]" class="w-full aspect-square object-contain border border-gray-100 rounded-[1.5rem] mb-4 p-3 shadow-md bg-white">
+                    <p class="text-3xl text-gray-800 mb-2" style="font-family: 'Dancing Script', cursive;">Gửi cô dâu</p>
+                    <div class="relative group mx-auto w-36">
+                        <img src="images/qr-co-dau.jpg" alt="[Mã QR Cô Dâu]" class="w-full aspect-square object-contain border border-gray-100 rounded-2xl mb-3 p-2 shadow-sm bg-white hover:scale-105 transition-transform duration-300">
                     </div>
-                    <div class="space-y-1">
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">VP Bank</p>
-                        <p class="text-sm font-bold text-gray-800 uppercase">Lan Anh</p>
-                        <p class="text-xs text-wedding-gold font-mono">190916553</p>
+                    <div class="space-y-0.5">
+                        <p class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">VP Bank</p>
+                        <p class="text-[13px] font-bold text-gray-800 uppercase">Lan Anh</p>
+                        <p class="text-[11px] text-wedding-gold font-mono">190916553</p>
                     </div>
                 </div>
             </div>
@@ -419,7 +421,7 @@
             <div class="flex flex-col items-center">
                 <div class="relative mb-10 reveal reveal-down">
                     <h2 class="font-serif text-[3.5rem] text-gray-100 absolute -top-6 left-1/2 -translate-x-1/2 opacity-50 select-none font-light italic">May 3</h2>
-                    <h2 class="font-savethedate text-6xl text-gray-800 relative z-10 leading-none">Countdown</h2>
+                    <h2 class="font-savethedate text-6xl italic font-light text-gray-800 relative z-10 leading-none">Countdown</h2>
                 </div>
                 
                 <div class="flex justify-center gap-3 px-4 mb-10 reveal reveal-up" id="countdown">
