@@ -13,7 +13,7 @@
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, doc, setDoc, query, onSnapshot } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
-        // CẤU HÌNH KẾT NỐI (Gửi dữ liệu ngầm nếu có URL)
+        // CẤU HÌNH KẾT NỐI GOOGLE SHEETS
         const GOOGLE_SHEET_URL = ""; 
 
         // Firebase Configuration
@@ -36,24 +36,16 @@
         onAuthStateChanged(auth, (u) => {
             user = u;
             if (user) {
-                // CHẾ ĐỘ BẢO MẬT: Chỉ hiện bảng nếu URL có chứa mã bí mật ?view=admin123
-                // Bạn có thể đổi 'admin123' thành bất kỳ chữ gì bạn muốn
-                if (window.location.search.includes('view=admin123')) {
-                    showAdminPanel();
+                // Kiểm tra nếu URL có chứa ?admin=true thì mới tải danh sách
+                if (window.location.search.includes('admin=true')) {
+                    const adminSec = document.getElementById('admin-view');
+                    if (adminSec) adminSec.classList.remove('hidden');
+                    loadRSVPList();
                 }
             }
         });
 
-        // Hàm hiện bảng quản lý (Chỉ gọi khi có mã bí mật trên URL)
-        window.showAdminPanel = () => {
-            const adminSec = document.getElementById('admin-view');
-            if (adminSec) {
-                adminSec.classList.remove('hidden');
-                loadRSVPList();
-            }
-        };
-
-        // Hàm gửi dữ liệu từ khách mời
+        // Hàm gửi dữ liệu đi
         window.submitRSVP = async (e) => {
             e.preventDefault();
             if (!user) return;
@@ -61,7 +53,7 @@
             const name = document.getElementById('name').value;
             const wish = document.getElementById('final-wish').value;
             const attendanceRaw = document.querySelector('input[name="attendance"]:checked').value;
-            const attendance = attendanceRaw === 'yes' ? 'Tham dự' : 'Tiếc là không thể';
+            const attendance = attendanceRaw === 'yes' ? 'Tham dự' : 'Không tham dự';
             const timestamp = new Date().toLocaleString('vi-VN');
 
             const btn = e.target.querySelector('button');
@@ -72,9 +64,11 @@
             const rsvpData = { name, wish, attendance, time: timestamp };
 
             try {
+                // 1. Lưu vào Firestore
                 const rsvpCol = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
                 await addDoc(rsvpCol, rsvpData);
 
+                // 2. Gửi sang Google Sheets
                 if (GOOGLE_SHEET_URL) {
                     fetch(GOOGLE_SHEET_URL, {
                         method: 'POST',
@@ -85,9 +79,10 @@
                     });
                 }
                 
-                alert(`Cảm ơn Quý khách ${name} đã gửi xác nhận!`);
+                alert(`Cảm ơn Quý khách ${name} đã gửi xác nhận! Thông tin đã được ghi vào danh sách.`);
                 e.target.reset();
             } catch (error) {
+                console.error("Error:", error);
                 alert("Có lỗi xảy ra, vui lòng thử lại sau.");
             } finally {
                 btn.innerText = originalText;
@@ -108,20 +103,15 @@
                     const data = doc.data();
                     count++;
                     const row = document.createElement('tr');
-                    row.className = "border-b text-[12px] hover:bg-gray-50";
-                    row.innerHTML = `
-                        <td class="py-3 px-3 font-bold">${data.name}</td>
-                        <td class="py-3 px-3 text-[10px]">${data.attendance}</td>
-                        <td class="py-3 px-3 text-gray-500 italic max-w-[150px] truncate">${data.wish || ''}</td>
-                        <td class="py-3 px-3 text-[9px] text-gray-400">${data.time || ''}</td>
-                    `;
+                    row.className = "border-b text-[11px] text-gray-600";
+                    row.innerHTML = `<td class="py-3 px-2 font-bold">${data.name}</td><td class="py-3 px-2">${data.attendance}</td><td class="py-3 px-2 max-w-[120px] truncate">${data.wish || ''}</td><td class="py-3 px-2 text-[9px]">${data.time || ''}</td>`;
                     listBody.appendChild(row);
                 });
                 countBadge.innerText = count;
             });
         };
 
-        window.exportToExcel = async () => {
+        window.exportToCSV = async () => {
             const rsvpCol = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
             const snapshot = await getDocs(rsvpCol);
             let csvContent = "\ufeffHọ tên,Tham dự,Lời chúc,Thời gian\n";
@@ -132,7 +122,7 @@
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement("a");
             link.href = URL.createObjectURL(blob);
-            link.download = "Danh_sach_khach_moi.csv";
+            link.download = "danh_sach_khach_moi.csv";
             link.click();
         };
     </script>
@@ -186,7 +176,7 @@
         .parallax-img:hover { transform: scale(1.05); }
     </style>
 </head>
-<body class="antialiased flex justify-center text-gray-800">
+<body class="antialiased flex justify-center">
 
     <div id="heart-container"></div>
 
@@ -202,13 +192,13 @@
     <div class="w-full max-w-[500px] bg-white shadow-2xl relative min-h-screen overflow-hidden border-x border-gray-100">
 
         <!-- Ảnh Bìa -->
-        <section class="relative w-full h-[100vh] flex flex-col justify-between overflow-hidden text-white">
+        <section class="relative w-full h-[100vh] flex flex-col justify-between overflow-hidden">
             <div class="absolute inset-0 z-0">
                 <img src="images/anh-bia.jpg" alt="[anh-bia.jpg]" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-black/10"></div>
             </div>
             <div class="relative z-10 w-full pt-20 px-8 text-left reveal reveal-down active">
-                <p class="font-savethedate text-[2.5rem] italic font-light leading-none tracking-[0.1em] uppercase whitespace-nowrap" style="text-shadow: 2px 4px 12px rgba(0,0,0,0.7), 0px 1px 3px rgba(0,0,0,0.5);">SAVE THE DATE</p>
+                <p class="font-savethedate text-[2.5rem] italic font-light text-white leading-none tracking-[0.1em] uppercase whitespace-nowrap" style="text-shadow: 2px 4px 12px rgba(0,0,0,0.7), 0px 1px 3px rgba(0,0,0,0.5);">SAVE THE DATE</p>
                 <div class="w-12 h-[2px] bg-white/80 mt-3 ml-2 rounded-full shadow-sm"></div>
             </div>
             <div class="relative z-10 w-full pb-24 px-8 reveal reveal-up active">
@@ -224,14 +214,21 @@
         <!-- Lịch Cưới -->
         <section class="py-12 px-8 bg-white relative z-10 text-center border-b border-gray-50">
             <div class="flex items-end justify-between reveal reveal-left mb-4">
-                <h2 class="font-savethedate text-3xl italic font-light leading-none">Our wedding day</h2>
-                <h3 class="font-serif text-lg font-bold">Tháng Năm</h3>
+                <h2 class="font-savethedate text-3xl italic font-light text-gray-800 leading-none">Our wedding day</h2>
+                <h3 class="font-serif text-lg font-bold text-gray-800">Tháng Năm</h3>
             </div>
-            <div class="calendar-grid reveal reveal-up text-gray-800" style="transition-delay: 0.2s;">
-                <div class="calendar-header">Thứ 2</div><div class="calendar-header">Thứ 3</div><div class="calendar-header">Thứ 4</div><div class="calendar-header">Thứ 5</div><div class="calendar-header">Thứ 6</div><div class="calendar-header">Thứ 7</div><div class="calendar-header">Chủ Nhật</div>
-                <div></div><div></div><div></div><div></div><div>1</div><div>2</div>
+            <div class="calendar-grid text-gray-800 reveal reveal-up" style="transition-delay: 0.2s;">
+                <div class="calendar-header">Thứ 2</div>
+                <div class="calendar-header">Thứ 3</div>
+                <div class="calendar-header">Thứ 4</div>
+                <div class="calendar-header">Thứ 5</div>
+                <div class="calendar-header">Thứ 6</div>
+                <div class="calendar-header">Thứ 7</div>
+                <div class="calendar-header">Chủ Nhật</div>
+                <div></div><div></div><div></div><div></div>
+                <div>1</div><div>2</div>
                 <div class="relative flex items-center justify-center group">
-                    <img src="https://assets.cinelove.me/assets/plugins/calen_heart_1.png" class="absolute w-[45px] h-[45px] opacity-90 transition-transform group-hover:scale-125" alt="heart" style="background:transparent">
+                    <img src="https://assets.cinelove.me/assets/plugins/calen_heart_1.png" class="absolute w-[45px] h-[45px] opacity-90 transition-transform group-hover:scale-125" alt="heart" style="background: transparent;">
                     <span class="relative z-10 text-white font-bold text-lg pt-0.5">3</span>
                 </div>
                 <div>4</div><div>5</div><div>6</div><div>7</div><div>8</div><div>9</div><div>10</div>
@@ -241,13 +238,13 @@
             </div>
         </section>
 
-        <!-- Ảnh Chân Dung -->
+        <!-- Chân dung -->
         <section class="py-12 px-6 bg-white space-y-20">
             <div class="w-[88%] mr-auto relative reveal reveal-left">
                 <div class="overflow-hidden rounded-[2.5rem] shadow-xl border border-gray-100">
                     <img src="images/co-dau.jpg" alt="[co-dau.jpg]" class="w-full aspect-[4/5] object-cover parallax-img">
                 </div>
-                <div class="absolute bottom-6 left-8 text-left name-photo text-white">
+                <div class="absolute bottom-6 left-8 text-left name-photo">
                     <p class="font-savethedate italic font-light text-3xl mb-[-4px]">Cô dâu</p>
                     <h3 class="font-name text-[2.5rem] tracking-wider">Lan Anh</h3>
                 </div>
@@ -256,42 +253,115 @@
                 <div class="overflow-hidden rounded-[2.5rem] shadow-xl border border-gray-100">
                     <img src="images/chu-re.jpg" alt="[chu-re.jpg]" class="w-full aspect-[4/5] object-cover parallax-img">
                 </div>
-                <div class="absolute bottom-6 left-8 text-left name-photo text-white">
+                <div class="absolute bottom-6 left-8 text-left name-photo">
                     <p class="font-savethedate italic font-light text-3xl mb-[-4px]">Chú rể</p>
                     <h3 class="font-name text-[2.5rem] tracking-wider">Văn Tâm</h3>
                 </div>
             </div>
         </section>
 
-        <!-- RSVP Form -->
+        <!-- Story -->
+        <section class="py-20 px-6 bg-white relative flex justify-center reveal reveal-zoom">
+            <div class="absolute w-[85%] h-[90%] bg-wedding-paperDark rotate-3 rounded-lg shadow-md top-10"></div>
+            <div class="relative z-10 w-[90%] bg-wedding-paper -rotate-2 rounded-lg shadow-2xl p-10 border-l-[10px] border-dashed border-gray-200">
+                <h2 class="font-serif text-xl font-bold text-gray-800 mb-6 uppercase tracking-[0.2em] text-center border-b border-gray-100 pb-4">Our Love Story</h2>
+                <p class="text-[13px] leading-[2.2] text-gray-700 font-medium text-justify">
+                    Giữa muôn vàn gặp gỡ, chúng mình may mắn tìm thấy nhau. Từ những ngày đầu bỡ ngỡ, qua bao vui buồn và thử thách, tình yêu vẫn lớn dần, hóa thành sự thấu hiểu và đồng hành. Hóa ra hạnh phúc chẳng phải điều xa xôi, mà là có một người để cùng sẻ chia, cùng nắm tay đi hết chặng đường dài phía trước.
+                    <br><br>
+                    <span class="italic text-gray-500 font-cursive text-2xl">với chúng mình...<br>"Chúng mình gặp nhau giữa dòng đời"</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- Gia đình -->
+        <section class="py-14 px-8 bg-white flex justify-between text-center border-b border-gray-50">
+            <div class="w-1/2 pr-4 border-r border-gray-100 reveal reveal-left">
+                <h3 class="font-bold text-base mb-4 text-wedding-gold uppercase tracking-widest">Nhà Trai</h3>
+                <p class="text-xs text-gray-600 leading-relaxed font-medium">Ông. Hà Văn Quyết<br>Bà. Lê Thị Dung<br>P. Long Bình - Đồng Nai</p>
+            </div>
+            <div class="w-1/2 pl-4 reveal reveal-right">
+                <h3 class="font-bold text-base mb-4 text-wedding-gold uppercase tracking-widest">Nhà Gái</h3>
+                <p class="text-xs text-gray-600 leading-relaxed font-medium">Ông. Tô Văn Mười<br>Bà. Lê Thị Hòa<br>P. Phước Tân - Đồng Nai</p>
+            </div>
+        </section>
+
+        <!-- Thư mời -->
+        <section class="py-20 px-6 bg-white text-center">
+            <div class="reveal reveal-down">
+                <p class="text-gray-500 text-xs uppercase tracking-[0.2em] mb-4 font-semibold">Thân mời Quý quan khách</p>
+                <p class="text-gray-600 text-xs italic mb-8 leading-relaxed">đến dự lễ thành hôn</p>
+            </div>
+            <div class="reveal reveal-zoom mb-12">
+                <h1 class="font-name text-[4.2rem] text-gray-800 leading-none">Văn Tâm</h1>
+                <h1 class="font-serif text-2xl text-gray-800 my-4 italic">&</h1>
+                <h1 class="font-name text-[4.2rem] text-gray-800 leading-none">Lan Anh</h1>
+            </div>
+            <div class="reveal reveal-up border-t border-b border-gray-100 py-10 flex flex-col items-center gap-6" style="transition-delay: 0.2s;">
+                <p class="text-xs text-gray-500 uppercase tracking-widest font-bold">Vào lúc 11h00, Chủ Nhật</p>
+                <div class="flex items-center gap-6">
+                    <div class="text-right w-24"><p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold leading-relaxed">Tháng Năm</p></div>
+                    <div class="text-[5.5rem] font-light text-gray-800 leading-none drop-shadow-sm">03</div>
+                    <div class="text-left w-24"><p class="text-[10px] uppercase tracking-widest text-gray-400 font-bold leading-relaxed">Năm 2026</p></div>
+                </div>
+                <p class="text-xs text-gray-400 italic font-serif leading-relaxed px-4">(Tức ngày 17 tháng 03 năm Bính Ngọ)</p>
+            </div>
+            <div class="reveal reveal-up mt-10" style="transition-delay: 0.4s;">
+                <p class="text-lg font-bold text-gray-800 uppercase tracking-[0.15em] mb-3">Tại Nhà Hàng Thiên Ân Palace</p>
+                <p class="text-xs text-gray-400 mb-8 font-serif max-w-xs mx-auto leading-relaxed">792 Xa lộ Hà Nội, Tam Hòa, Biên Hòa, Đồng Nai</p>
+                <div class="w-full aspect-video rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white">
+                    <iframe src="https://maps.google.com/maps?q=Thi%C3%AAn%20%C3%82n%20Palace%2C%20792%20Xa%20l%E1%BB%99%20H%C3%A0%20N%E1%BB%99i%2C%20Khu%20ph%E1%BB%91%202%2C%20Ph%C6%B0%E1%BB%9Dng%20Tam%20H%C3%B2a%2C%20Bi%C3%AAn%20H%C3%B2a&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- RSVP -->
         <section id="rsvp-section" class="py-16 px-8 bg-white reveal reveal-up text-center border-t border-gray-50">
             <div class="relative mb-10">
                 <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-100"></div></div>
                 <div class="relative flex justify-center"><span class="bg-white px-4 text-[10px] text-gray-300 font-bold uppercase tracking-[0.3em]">Xác nhận tham dự</span></div>
             </div>
-            <div class="border border-gray-100 p-8 rounded-[2rem] shadow-xl bg-gray-50/30 text-gray-800">
-                <h2 class="font-serif font-bold text-2xl mb-8">Sẽ tham gia chứ?</h2>
+            <div class="border border-gray-100 p-8 rounded-[2rem] shadow-xl bg-gray-50/30">
+                <h2 class="font-serif font-bold text-2xl mb-8 text-gray-800">Xác nhận tham dự</h2>
                 <form onsubmit="submitRSVP(event)" class="space-y-5 text-left">
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Họ và tên</label>
-                        <input type="text" id="name" required class="w-full px-5 py-4 border border-gray-200 rounded-2xl outline-none text-sm focus:border-gray-400 bg-white" placeholder="Nhập tên tại đây...">
+                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Họ và tên của Quý khách</label>
+                        <input type="text" id="name" required class="w-full px-5 py-4 border border-gray-200 rounded-2xl outline-none text-sm focus:border-gray-400 bg-white transition-all shadow-sm" placeholder="Nhập tên tại đây...">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Lời chúc</label>
-                        <textarea id="final-wish" rows="3" class="w-full px-5 py-4 border border-gray-200 rounded-2xl outline-none text-sm focus:border-gray-400 bg-white" placeholder="Gửi lời tốt đẹp nhất..."></textarea>
+                        <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">Lời chúc thân thương</label>
+                        <textarea id="final-wish" rows="3" class="w-full px-5 py-4 border border-gray-200 rounded-2xl outline-none text-sm focus:border-gray-400 bg-white font-serif transition-all shadow-sm" placeholder="Gửi những lời tốt đẹp nhất..."></textarea>
                     </div>
                     <div class="pt-4 space-y-4">
                         <label class="flex items-center cursor-pointer group">
-                            <input type="radio" name="attendance" value="yes" checked class="w-5 h-5 accent-gray-800">
-                            <span class="ml-4 text-sm">Vui vẻ tham dự</span>
+                            <input type="radio" name="attendance" value="yes" checked class="w-5 h-5 text-gray-800 accent-gray-800">
+                            <span class="ml-4 text-sm text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Vui vẻ tham dự</span>
                         </label>
                         <label class="flex items-center cursor-pointer group">
-                            <input type="radio" name="attendance" value="no" class="w-5 h-5 accent-gray-800">
-                            <span class="ml-4 text-sm">Tiếc là không thể</span>
+                            <input type="radio" name="attendance" value="no" class="w-5 h-5 text-gray-800 accent-gray-800">
+                            <span class="ml-4 text-sm text-gray-700 font-medium group-hover:text-gray-900 transition-colors">Tiếc là không thể tham dự</span>
                         </label>
                     </div>
-                    <button type="submit" class="w-full bg-gray-800 text-white font-bold py-5 rounded-2xl hover:bg-black transition-all text-xs tracking-[0.2em] uppercase mt-8 shadow-lg active:scale-95 text-center">Gửi xác nhận ngay</button>
+                    <button type="submit" class="w-full bg-gray-800 text-white font-bold py-5 rounded-2xl hover:bg-black transition-all text-xs tracking-[0.2em] uppercase mt-8 shadow-lg active:scale-95">Gửi xác nhận ngay</button>
                 </form>
+            </div>
+        </section>
+
+        <!-- Sổ lưu bút AI -->
+        <section class="py-12 px-8 bg-white reveal reveal-zoom">
+            <div class="bg-gradient-to-br from-blue-50/50 to-purple-50/50 p-8 rounded-[2.5rem] border border-blue-100/50 shadow-inner">
+                <h2 class="font-serif font-bold text-2xl text-center mb-3 text-gray-800">Sổ Lưu Bút AI ✨</h2>
+                <div class="space-y-4">
+                    <input type="text" id="ai-relation" class="w-full px-5 py-4 border border-blue-50 rounded-2xl text-sm bg-white outline-none shadow-sm" placeholder="Vai vế? (vd: Bạn...)">
+                    <select id="ai-tone" class="w-full px-5 py-4 border border-blue-50 rounded-2xl text-sm bg-white outline-none shadow-sm">
+                        <option value="chân thành, ý nghĩa">Chân thành</option>
+                        <option value="hài hước, vui nhộn">Hài hước</option>
+                    </select>
+                    <button onclick="generateAIWish()" id="btn-generate-ai" class="btn-ai w-full text-white font-bold py-4 rounded-2xl shadow-lg text-[11px] tracking-[0.2em]">SÁNG TÁC ✨</button>
+                    <div id="ai-result-container" class="hidden mt-6 animate-pulse">
+                        <textarea id="ai-wish-output" rows="4" class="w-full px-5 py-5 border border-blue-50 rounded-2xl text-sm bg-white/80 italic text-gray-700 font-serif shadow-sm"></textarea>
+                        <button onclick="copyAndScrollToRSVP()" class="w-full mt-4 bg-gray-800 text-white py-4 rounded-2xl text-[11px] font-bold tracking-[0.2em] shadow-md">DÙNG LỜI CHÚC NÀY 💌</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -300,74 +370,50 @@
             <h2 class="text-5xl italic font-light text-gray-800 mb-10 reveal reveal-down" style="font-family: 'Cormorant', serif; padding-bottom: 5px;">Hộp Mừng Cưới</h2>
             <div class="grid grid-cols-2 gap-4 max-w-[360px] mx-auto">
                 <div class="reveal reveal-left">
-                    <p class="text-2xl text-gray-800 mb-2 italic" style="font-family: 'Dancing Script', cursive;">Gửi chú rể</p>
-                    <div class="mx-auto w-32"><img src="images/qr-chu-re.jpg" alt="QR" class="w-full aspect-square border border-gray-100 rounded-2xl mb-3 p-2 shadow-sm bg-white"></div>
-                    <div class="space-y-0.5 text-center text-gray-800">
-                        <p class="text-[8px] text-gray-400 font-bold uppercase">Vietinbank</p>
-                        <p class="text-[12px] font-bold uppercase text-gray-800">Văn Tâm</p>
-                        <p class="text-[10px] text-wedding-gold font-mono">036 157 1555</p>
-                    </div>
+                    <p class="text-3xl text-gray-800 mb-2" style="font-family: 'Dancing Script', cursive;">Gửi chú rể</p>
+                    <div class="mx-auto w-36"><img src="images/qr-chu-re.jpg" alt="QR" class="w-full aspect-square border border-gray-100 rounded-2xl mb-3 p-2 shadow-sm bg-white"></div>
+                    <div class="space-y-0.5"><p class="text-[9px] text-gray-400 font-bold uppercase">Vietinbank</p><p class="text-[13px] font-bold text-gray-800 uppercase">Văn Tâm</p><p class="text-[11px] text-wedding-gold font-mono">036 157 1555</p></div>
                 </div>
                 <div class="reveal reveal-right">
-                    <p class="text-2xl text-gray-800 mb-2 italic" style="font-family: 'Dancing Script', cursive;">Gửi cô dâu</p>
-                    <div class="mx-auto w-32"><img src="images/qr-co-dau.jpg" alt="QR" class="w-full aspect-square border border-gray-100 rounded-2xl mb-3 p-2 shadow-sm bg-white"></div>
-                    <div class="space-y-0.5 text-center text-gray-800">
-                        <p class="text-[8px] text-gray-400 font-bold uppercase">VP Bank</p>
-                        <p class="text-[12px] font-bold uppercase text-gray-800">Lan Anh</p>
-                        <p class="text-[10px] text-wedding-gold font-mono">190916553</p>
-                    </div>
+                    <p class="text-3xl text-gray-800 mb-2" style="font-family: 'Dancing Script', cursive;">Gửi cô dâu</p>
+                    <div class="mx-auto w-36"><img src="images/qr-co-dau.jpg" alt="QR" class="w-full aspect-square border border-gray-100 rounded-2xl mb-3 p-2 shadow-sm bg-white"></div>
+                    <div class="space-y-0.5"><p class="text-[9px] text-gray-400 font-bold uppercase">VP Bank</p><p class="text-[13px] font-bold text-gray-800 uppercase">Lan Anh</p><p class="text-[11px] text-wedding-gold font-mono">190916553</p></div>
                 </div>
             </div>
         </section>
 
-        <!-- Footer -->
-        <section class="relative w-full py-16 bg-white overflow-hidden border-t border-gray-50 text-gray-800">
+        <!-- Countdown -->
+        <section class="relative w-full py-16 bg-white overflow-hidden border-t border-gray-50">
             <div class="flex flex-col items-center">
                 <div class="relative mb-10 reveal reveal-down">
                     <h2 class="font-serif text-[3.5rem] text-gray-100 absolute -top-6 left-1/2 -translate-x-1/2 opacity-50 font-light italic">May 3</h2>
-                    <h2 class="font-savethedate text-6xl italic font-light relative z-10 leading-none">Countdown</h2>
+                    <h2 class="font-savethedate text-6xl italic font-light text-gray-800 relative z-10 leading-none">Countdown</h2>
                 </div>
                 <div class="flex justify-center gap-3 px-4 mb-10 reveal reveal-up" id="countdown">
-                    <div class="bg-white rounded-2xl w-[60px] py-3 text-center shadow border border-gray-50"><span id="days" class="font-serif text-xl font-bold">00</span><span class="block text-[8px] text-gray-400 uppercase">ngày</span></div>
-                    <div class="bg-white rounded-2xl w-[60px] py-3 text-center shadow border border-gray-50"><span id="hours" class="font-serif text-xl font-bold">00</span><span class="block text-[8px] text-gray-400 uppercase">giờ</span></div>
-                    <div class="bg-white rounded-2xl w-[60px] py-3 text-center shadow border border-gray-50"><span id="minutes" class="font-serif text-xl font-bold">00</span><span class="block text-[8px] text-gray-400 uppercase">phút</span></div>
-                    <div class="bg-white rounded-2xl w-[60px] py-3 text-center shadow border border-gray-50"><span id="seconds" class="font-serif text-xl font-bold">00</span><span class="block text-[8px] text-gray-400 uppercase">giây</span></div>
+                    <div class="bg-white rounded-2xl w-[65px] py-3 text-center shadow-lg border border-gray-50"><span id="days" class="font-serif text-2xl text-gray-800 font-bold">00</span><span class="block text-[10px] text-gray-400 uppercase mt-1">ngày</span></div>
+                    <div class="bg-white rounded-2xl w-[65px] py-3 text-center shadow-lg border border-gray-50"><span id="hours" class="font-serif text-2xl text-gray-800 font-bold">00</span><span class="block text-[10px] text-gray-400 uppercase mt-1">giờ</span></div>
+                    <div class="bg-white rounded-2xl w-[65px] py-3 text-center shadow-lg border border-gray-50"><span id="minutes" class="font-serif text-2xl text-gray-800 font-bold">00</span><span class="block text-[10px] text-gray-400 uppercase mt-1">phút</span></div>
+                    <div class="bg-white rounded-2xl w-[65px] py-3 text-center shadow-lg border border-gray-50"><span id="seconds" class="font-serif text-2xl text-gray-800 font-bold">00</span><span class="block text-[10px] text-gray-400 uppercase mt-1">giây</span></div>
                 </div>
-                <div class="w-full px-6 pb-10 reveal reveal-zoom text-center">
-                    <img src="images/anh-ket-thuc.jpg" alt="End" class="w-full aspect-square object-cover rounded-[3rem] shadow-xl mx-auto">
-                </div>
+                <div class="w-full px-6 pb-16 reveal reveal-zoom"><img src="images/anh-ket-thuc.jpg" alt="End" class="w-full aspect-square object-cover rounded-[3rem] shadow-xl"></div>
             </div>
-            <div class="text-center pb-8 px-4 text-gray-300">
-                <p class="text-[10px] uppercase tracking-[0.5em]">Lan Anh & Văn Tâm • Wedding 2026</p>
-                <!-- NÚT QUẢN LÝ ĐÃ BỊ XÓA HOÀN TOÀN TẠI ĐÂY -->
-            </div>
+            <p class="text-[10px] text-gray-300 text-center uppercase tracking-[0.5em] pb-8">Lan Anh & Văn Tâm • Wedding 2026</p>
         </section>
 
-        <!-- BẢNG QUẢN LÝ (Giao diện giống Excel - Bị ẩn 100% với khách) -->
-        <section id="admin-view" class="py-12 px-6 bg-slate-100 border-t-8 border-slate-300 hidden">
-            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
-                <div class="bg-slate-800 p-6 text-white flex justify-between items-center">
+        <!-- BẢNG QUẢN LÝ (Mặc định bị ẩn) -->
+        <section id="admin-view" class="py-10 px-4 bg-gray-100 border-t-4 border-gray-300 hidden">
+            <div class="bg-white rounded-xl shadow-lg p-5 overflow-hidden">
+                <div class="flex justify-between items-center mb-5">
                     <div>
-                        <h2 class="text-xl font-bold">📊 Danh sách xác nhận</h2>
-                        <p class="text-[11px] text-slate-400">Có <span id="guest-count">0</span> khách</p>
+                        <h2 class="font-bold text-gray-800">Danh sách xác nhận</h2>
+                        <p class="text-[10px] text-gray-400 uppercase">Tổng cộng: <span id="guest-count">0</span> khách</p>
                     </div>
-                    <button onclick="exportToExcel()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-bold px-5 py-3 rounded-xl shadow-lg transition-all uppercase">
-                        📥 Tải File Excel (.csv)
-                    </button>
+                    <button onclick="exportToCSV()" class="bg-emerald-600 text-white text-[10px] font-bold px-3 py-2 rounded-lg shadow uppercase">Xuất CSV</button>
                 </div>
-                <div class="overflow-x-auto max-h-[500px]">
-                    <table class="w-full text-left border-collapse">
-                        <thead class="sticky top-0 bg-slate-50 z-10">
-                            <tr class="text-[10px] text-slate-500 uppercase font-bold border-b">
-                                <th class="py-4 px-4">Khách mời</th>
-                                <th class="py-4 px-4">Tham dự</th>
-                                <th class="py-4 px-4">Lời chúc</th>
-                                <th class="py-4 px-4">Thời gian</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rsvp-list-body" class="text-gray-800">
-                            <tr><td colspan="4" class="py-10 text-center text-sm italic">Đang tải...</td></tr>
-                        </tbody>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead><tr class="text-[10px] text-gray-400 border-b"><th class="py-2 px-2">Khách</th><th class="py-2 px-2">Trạng thái</th><th class="py-2 px-2">Lời chúc</th><th class="py-2 px-2">Gửi lúc</th></tr></thead>
+                        <tbody id="rsvp-list-body"><tr><td colspan="4" class="py-4 text-center text-xs italic text-gray-400">Đang tải...</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -376,21 +422,20 @@
     </div>
 
     <script>
-        // Hạt tim bay
         function createHeart() {
             const container = document.getElementById('heart-container');
             if(!container) return;
             const heart = document.createElement('div');
-            heart.className = 'heart-particle'; heart.innerHTML = '❤️';
+            heart.classList.add('heart-particle'); heart.innerHTML = '❤️';
             const startX = Math.random() * window.innerWidth;
-            heart.style.left = startX + 'px'; heart.style.fontSize = (Math.random() * 15 + 5) + 'px';
+            const size = Math.random() * 15 + 5;
+            heart.style.left = startX + 'px'; heart.style.fontSize = size + 'px';
             heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
             container.appendChild(heart);
             setTimeout(() => heart.remove(), 10000);
         }
         setInterval(createHeart, 800);
 
-        // Hiệu ứng cuộn
         document.addEventListener('DOMContentLoaded', function() {
             const reveals = document.querySelectorAll('.reveal');
             const music = document.getElementById("wedding-music");
@@ -403,20 +448,39 @@
             reveals.forEach(reveal => revealObserver.observe(reveal));
         });
 
-        // Đếm ngược
         const timer = setInterval(() => {
-            const diff = new Date("May 3, 2026 11:00:00").getTime() - new Date().getTime();
-            if (diff < 0) { clearInterval(timer); return; }
-            document.getElementById("days").innerText = Math.floor(diff / 86400000).toString().padStart(2, '0');
-            document.getElementById("hours").innerText = Math.floor((diff % 86400000) / 3600000).toString().padStart(2, '0');
-            document.getElementById("minutes").innerText = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
-            document.getElementById("seconds").innerText = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+            const distance = new Date("May 3, 2026 11:00:00").getTime() - new Date().getTime();
+            if (distance < 0) { clearInterval(timer); return; }
+            document.getElementById("days").innerText = Math.floor(distance / 86400000).toString().padStart(2, '0');
+            document.getElementById("hours").innerText = Math.floor((distance % 86400000) / 3600000).toString().padStart(2, '0');
+            document.getElementById("minutes").innerText = Math.floor((distance % 3600000) / 60000).toString().padStart(2, '0');
+            document.getElementById("seconds").innerText = Math.floor((distance % 60000) / 1000).toString().padStart(2, '0');
         }, 1000);
 
         function toggleMusic() {
-            const m = document.getElementById("wedding-music");
-            const b = document.getElementById("music-toggle");
-            m.paused ? (m.play(), b.classList.remove('music-paused')) : (m.pause(), b.classList.add('music-paused'));
+            const music = document.getElementById("wedding-music");
+            const musicBtn = document.getElementById("music-toggle");
+            if (music.paused) { music.play(); musicBtn.classList.remove('music-paused'); }
+            else { music.pause(); musicBtn.classList.add('music-paused'); }
+        }
+
+        async function generateAIWish() {
+            const rel = document.getElementById('ai-relation').value.trim();
+            if(!rel) { alert('Vui lòng nhập vai vế!'); return; }
+            const btn = document.getElementById('btn-generate-ai');
+            btn.innerText = 'ĐANG VIẾT...'; btn.disabled = true;
+            const payload = { contents: [{ parts: [{ text: `Viết lời chúc cưới ngắn cho Lan Anh & Văn Tâm. Quan hệ: ${rel}.` }] }] };
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=`, { method: 'POST', body: JSON.stringify(payload) });
+                const data = await res.json();
+                document.getElementById('ai-wish-output').value = data.candidates[0].content.parts[0].text.trim();
+                document.getElementById('ai-result-container').classList.remove('hidden');
+            } catch (e) { alert('Lỗi AI!'); }
+            finally { btn.innerText = 'SÁNG TÁC ✨'; btn.disabled = false; }
+        }
+        function copyAndScrollToRSVP() {
+            document.getElementById('final-wish').value = document.getElementById('ai-wish-output').value;
+            document.getElementById('rsvp-section').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>
