@@ -36,16 +36,21 @@
         onAuthStateChanged(auth, (u) => {
             user = u;
             if (user) {
-                // Kiểm tra nếu URL có chứa ?admin=true thì mới tải danh sách
                 if (window.location.search.includes('admin=true')) {
-                    const adminSec = document.getElementById('admin-view');
-                    if (adminSec) adminSec.classList.remove('hidden');
-                    loadRSVPList();
+                    showAdminPanel();
                 }
             }
         });
 
-        // Hàm gửi dữ liệu đi
+        window.showAdminPanel = () => {
+            const adminSec = document.getElementById('admin-view');
+            if (adminSec) {
+                adminSec.classList.remove('hidden');
+                loadRSVPList();
+                adminSec.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
         window.submitRSVP = async (e) => {
             e.preventDefault();
             if (!user) return;
@@ -64,11 +69,9 @@
             const rsvpData = { name, wish, attendance, time: timestamp };
 
             try {
-                // 1. Lưu vào Firestore
                 const rsvpCol = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
                 await addDoc(rsvpCol, rsvpData);
 
-                // 2. Gửi sang Google Sheets
                 if (GOOGLE_SHEET_URL) {
                     fetch(GOOGLE_SHEET_URL, {
                         method: 'POST',
@@ -397,7 +400,12 @@
                 </div>
                 <div class="w-full px-6 pb-16 reveal reveal-zoom"><img src="images/anh-ket-thuc.jpg" alt="End" class="w-full aspect-square object-cover rounded-[3rem] shadow-xl"></div>
             </div>
-            <p class="text-[10px] text-gray-300 text-center uppercase tracking-[0.5em] pb-8">Lan Anh & Văn Tâm • Wedding 2026</p>
+            
+            <div class="text-center pb-8 px-4">
+                <p class="text-[10px] text-gray-300 uppercase tracking-[0.5em] mb-4">Lan Anh & Văn Tâm • Wedding 2026</p>
+                <!-- Nút ẩn để hiện bảng quản lý -->
+                <button onclick="showAdminPanel()" class="text-[9px] text-gray-200 hover:text-gray-400 transition-colors uppercase tracking-widest border border-gray-100 px-2 py-1 rounded">Quản lý</button>
+            </div>
         </section>
 
         <!-- BẢNG QUẢN LÝ (Mặc định bị ẩn) -->
