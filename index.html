@@ -115,7 +115,6 @@
 
         .name-cover {
             color: white;
-            /* CẬP NHẬT: Tắt viền đen (stroke), chỉ giữ bóng đổ nhẹ để dễ đọc trên nền ảnh */
             text-shadow: 0px 4px 10px rgba(0,0,0,0.4);
         }
 
@@ -128,7 +127,7 @@
         .music-paused { animation-play-state: paused; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* CẬP NHẬT: Tối ưu Grid lịch cho Mobile */
+        /* Tối ưu Grid lịch cho Mobile */
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; font-size: 14px; margin-top: 25px; }
         .calendar-grid div { padding: 8px 0; }
         .calendar-header { font-weight: 600; font-size: 9px; color: #888; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px !important; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; }
@@ -256,9 +255,11 @@
         </section>
 
         <section class="py-20 px-6 bg-white text-center">
+            <!-- ĐÃ CẬP NHẬT: PHẦN HIỂN THỊ TÊN KHÁCH CÁ NHÂN HÓA -->
             <div class="reveal reveal-down">
-                <p class="text-gray-500 text-xs uppercase tracking-[0.2em] mb-4 font-semibold">Thân mời Quý quan khách</p>
-                <p class="text-gray-600 text-xs italic mb-8 leading-relaxed">đến dự lễ thành hôn</p>
+                <p class="text-gray-500 text-xs uppercase tracking-[0.2em] mb-3 font-semibold">Trân trọng kính mời</p>
+                <h2 id="guest-name-display" class="text-3xl text-wedding-gold font-cursive mb-3 px-4 transition-all duration-500 leading-tight">Gia đình & Những người thân thương</h2>
+                <p class="text-gray-600 text-xs italic mb-8 leading-relaxed font-serif">đến dự lễ thành hôn của</p>
             </div>
 
             <div class="reveal reveal-zoom mb-12">
@@ -365,7 +366,7 @@
         <section class="py-12 px-8 bg-white reveal reveal-zoom">
             <div class="bg-gradient-to-br from-blue-50/50 to-purple-50/50 p-8 rounded-[2.5rem] border border-blue-100/50 shadow-inner">
                 <h2 class="font-serif font-bold text-2xl text-center mb-3 text-gray-800">Sổ Lưu Bút AI ✨</h2>
-                <p class="text-[10px] text-center text-blue-400 mb-6 font-bold uppercase tracking-widest text-center">Lời chúc tự động từ tâm</p>
+                <p class="text-[10px] text-center text-blue-400 mb-6 font-bold uppercase tracking-widest">Lời chúc tự động từ tâm</p>
                 <div class="space-y-4">
                     <input type="text" id="ai-relation" class="w-full px-5 py-4 border border-blue-50 rounded-2xl text-sm bg-white outline-none shadow-sm" placeholder="Vai vế của Quý khách? (vd: Cô, Chú, Bạn...)">
                     <select id="ai-tone" class="w-full px-5 py-4 border border-blue-50 rounded-2xl text-sm bg-white outline-none shadow-sm">
@@ -453,6 +454,32 @@
             </div>
             
             <p class="text-[10px] text-gray-300 text-center uppercase tracking-[0.5em] pb-8">Lan Anh & Văn Tâm • Wedding 2026</p>
+        </section>
+
+        <!-- ĐÃ CẬP NHẬT: CÔNG CỤ TẠO LINK BÍ MẬT DÀNH CHO DÂU RỂ (Chỉ hiện khi URL có ?admin=true) -->
+        <section id="admin-link-generator" class="hidden py-8 px-6 bg-[#1a1a1a] text-white border-t-4 border-wedding-gold relative z-50">
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <svg class="w-5 h-5 text-wedding-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                <h3 class="text-sm font-bold text-wedding-gold uppercase tracking-wider">Công cụ tạo Link</h3>
+            </div>
+            <p class="text-xs text-gray-400 mb-5 text-center leading-relaxed">Tính năng ẩn dành riêng cho Dâu Rể. Nhập tên khách để tạo link, tên này cũng sẽ tự động điền vào form Xác nhận tham dự bên trên!</p>
+            
+            <div class="flex flex-col gap-3 mb-4">
+                <input type="text" id="guest-input" placeholder="VD: Cô Chú Tư, Bạn Lan Anh..." class="w-full bg-gray-800 border border-gray-600 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-wedding-gold text-white placeholder-gray-500 shadow-inner">
+                <button onclick="updateInvitation()" class="w-full bg-wedding-gold hover:bg-yellow-600 text-white px-4 py-3 rounded-xl text-sm font-bold uppercase tracking-widest transition-colors shadow-lg active:scale-95">
+                    Tạo Link
+                </button>
+            </div>
+
+            <div class="bg-gray-800 border border-gray-600 p-3 rounded-xl flex items-center justify-between group">
+                <code id="generated-link" class="text-[11px] text-gray-300 break-all w-[85%] font-mono"></code>
+                <button onclick="copyLink()" class="text-gray-400 hover:text-white p-2 bg-gray-700 rounded-lg" title="Copy Link">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </button>
+            </div>
+            <p id="copy-status" class="text-xs text-green-400 mt-3 hidden text-center font-bold">✓ Đã copy link thành công!</p>
         </section>
 
     </div>
@@ -646,6 +673,91 @@
             const fw = document.getElementById('final-wish');
             const rs = document.getElementById('rsvp-section');
             if(aiWish && fw && rs) { fw.value = aiWish; rs.scrollIntoView({ behavior: 'smooth' }); }
+        }
+
+        // ==========================================
+        // 7. TÍNH NĂNG CÁ NHÂN HÓA LỜI MỜI KHÁCH
+        // ==========================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chạy 2 hàm kiểm tra URL ngay khi vừa tải web xong
+            applyGuestNameFromURL();
+            toggleAdminTools();
+        });
+
+        // Hàm lấy tên từ đường link và thay vào thiệp
+        function applyGuestNameFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const guestName = urlParams.get('khach');
+            const displayElement = document.getElementById('guest-name-display');
+            const nameInput = document.getElementById('name'); // Ô nhập tên RSVP
+
+            if (guestName && guestName.trim() !== "") {
+                // Đổi tên trên thiệp
+                if(displayElement) displayElement.textContent = guestName;
+                // Tự động điền sẵn tên vào form Xác nhận tham dự (Khách không cần gõ lại)
+                if(nameInput) nameInput.value = guestName; 
+            } else {
+                if(displayElement) displayElement.textContent = "Gia đình & Những người thân thương";
+            }
+        }
+
+        // Hàm ẩn/hiện công cụ tạo link dựa trên tham số ?admin=true
+        function toggleAdminTools() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isAdmin = urlParams.get('admin');
+            const adminSection = document.getElementById('admin-link-generator');
+            
+            if (isAdmin === 'true' && adminSection) {
+                adminSection.classList.remove('hidden');
+                // Lấy đường link gốc của web
+                const baseUrl = window.location.origin + window.location.pathname;
+                document.getElementById('generated-link').textContent = baseUrl;
+            }
+        }
+
+        // Hàm tạo link mới (cho nút Tạo Link)
+        function updateInvitation() {
+            const inputName = document.getElementById('guest-input').value;
+            const baseUrl = window.location.origin + window.location.pathname;
+            let finalUrl = baseUrl;
+
+            if (inputName.trim() !== "") {
+                const encodedName = encodeURIComponent(inputName);
+                finalUrl = baseUrl + "?khach=" + encodedName;
+                
+                // Cập nhật giao diện để Dâu Rể xem trước
+                const displayElement = document.getElementById('guest-name-display');
+                if(displayElement) displayElement.textContent = inputName;
+                const nameInput = document.getElementById('name');
+                if(nameInput) nameInput.value = inputName;
+            } else {
+                const displayElement = document.getElementById('guest-name-display');
+                if(displayElement) displayElement.textContent = "Gia đình & Những người thân thương";
+                const nameInput = document.getElementById('name');
+                if(nameInput) nameInput.value = "";
+            }
+            
+            document.getElementById('generated-link').textContent = finalUrl;
+            
+            // Tự động cuộn lên phần có tên khách để Dâu Rể dễ nhìn thấy sự thay đổi
+            document.getElementById('guest-name-display').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Hàm Copy Link
+        function copyLink() {
+            const linkText = document.getElementById('generated-link').textContent;
+            const tempInput = document.createElement("input");
+            tempInput.value = linkText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Hiện thông báo đã copy
+            const statusText = document.getElementById('copy-status');
+            statusText.classList.remove('hidden');
+            setTimeout(() => { statusText.classList.add('hidden'); }, 2000);
         }
     </script>
 </body>
